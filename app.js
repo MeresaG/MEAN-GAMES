@@ -7,6 +7,10 @@ const req = require('express/lib/request');
 
 const app = express();
 
+//Middlewares
+app.use(express.json());
+app.use(express.urlencoded({extended: true}))
+
 dotenv.config({path : './config/.env'});
 
 //Loggers
