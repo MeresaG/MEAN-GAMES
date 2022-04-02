@@ -1,9 +1,11 @@
-const express = require('express');
 const dotenv = require('dotenv');
+dotenv.config({path : './config/.env'});
+require('./api/data/db');
+const express = require('express');
 const path = require('path');
 const morgan = require('morgan');
-const router =  require('./routes/games');
-const req = require('express/lib/request');
+const router =  require('./api/routes/games');
+
 
 const app = express();
 
@@ -11,7 +13,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
 
-dotenv.config({path : './config/.env'});
 
 //Loggers
 app.use(morgan('dev'));
