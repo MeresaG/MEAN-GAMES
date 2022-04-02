@@ -46,7 +46,37 @@ module.exports.getAll = (req, res) => {
 
 module.exports.addOne = (req, res) => {
     console.log("Add One Controller called");
-   
+    const response = {
+        status : process.env.HTTP_STATUS_OK,
+        message : {} 
+    }
+    const newGame = {
+        title: req.body.title,
+        year: req.body.year,
+        rate: req.body.rate, 
+        price: req.body.price,
+        minPlayers: req.body.minPlayers, 
+        maxPlayers: req.body.maxPlayers,
+        publisher: {name: "NoName"}, 
+        reviews: [], 
+        minAge: req.body.minAge,
+        designers: [req.body.designers]
+    };
+
+    Game.create(newGame, function(err, game) {
+
+        if (err) {
+            console.log("Error creating game");
+            response.status= process.env.HTTP_STATUS_INTERNAL_ERROR;
+            response.message= err;
+        }
+        else {
+            response.status = process.env.HTTP_STATUS_OK;
+            response.message = game;
+        }
+        res.status(response.status).json(response.message);
+        
+    })   
     
 }
 
