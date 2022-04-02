@@ -11,12 +11,13 @@ module.exports.getAll = (req, res) => {
     }
     if(req.query && req.query.count) {
         count = parseInt(req.query.count, 10);
-        count = count > 10 ? 10 : count;
+        
     }
     if(isNaN(offset) || isNaN(count)) {
         console.log("Offset or Count is not a number");
         return res.status(400).json({message : "Offset and Count must be  digits"});
     }
+    count = count > 10 ? 10 : count;
     Game.find().skip(offset).limit(count).exec(function(err, games) {
         if(err) {
             return res.status(500).json({error : err})
@@ -64,10 +65,19 @@ module.exports.getOne = (req, res) => {
     const gameId= req.params.gameId;
     Game.findById(gameId).exec(function(err, games) {
         if(err) {
+            console.log("Error reading game");
             return res.status(500).json({error : err})
 
         }
-        return res.status(200).json(games);
+        if(game) {
+            console.log("Found Game");
+            return res.status(200).json(games);
+        }
+        else {
+            console.log("game is null");
+            return res.status(404).json({message : "Game with given Id not found"});
+        }
+        
         });
 }
 
