@@ -4,8 +4,8 @@
   "description": "This is a simple MEAN GAMES APP",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app",
-    "dev": "node app"
+    "start": "nodemon --inspect",
+    "dev": "nodemon --inspect"
   },
   "repository": {
     "type": "git",

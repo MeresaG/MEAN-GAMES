@@ -1,9 +1,12 @@
-const { default: mongoose } = require("mongoose");
-const ObjectId= require("mongodb").ObjectId;
+const mongoose = require("mongoose");
 const Game = mongoose.model(process.env.GAME_MODEL)
 
 module.exports.getAll = (req, res) => {
     console.log("Get All Controller called");
+    const response = {
+        status : process.env.HTTP_STATUS_OK,
+        message : {} 
+    }
     let offset = 0;
     let count = 3;
     if(req.query && req.query.offset) {
@@ -15,81 +18,107 @@ module.exports.getAll = (req, res) => {
     }
     if(isNaN(offset) || isNaN(count)) {
         console.log("Offset or Count is not a number");
-        return res.status(400).json({message : "Offset and Count must be  digits"});
+        response.status = process.env.HTTP_STATUS_NOTFOUND;
+        response.message = {message : "Offset and Count must be  digits"};
+        
     }
-    count = count > 10 ? 10 : count;
-    Game.find().skip(offset).limit(count).exec(function(err, games) {
-        if(err) {
-            return res.status(500).json({error : err})
+    if(response.status !== process.env.HTTP_STATUS_OK) {
+        return res.status(response.status).json(response.message);
+    }
+     else {
+        count = count > 10 ? 10 : count;
+        Game.find().skip(offset).limit(count).exec(function(err, games) {
+            if(err) {
+                response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;
+                response.message = err;
 
-        }
-        console.log("Found games");
-        return res.status(200).json(games);
-        });
+            }
+            else {
+                console.log("Found games");
+                response.status = process.env.HTTP_STATUS_OK;
+                response.message = games;
+            }
+            return res.status(response.status).json(response.message)
+            
+            });
+    }
 }
 
 module.exports.addOne = (req, res) => {
     console.log("Add One Controller called");
-    // let newGame = {};
-    // if(req.body && req.body.title&& req.body.price && req.body.players && req.body.age ) {
-        
-    //     if(parseInt(req.body.players) >= 1 && parseInt(req.body.players) <= 11 && parseInt(req.body.age) >= 6 && parseInt(req.body.age) <= 99) {
-
-    //         newGame.title = req.body.title;
-    //         newGame.price = parseFloat(req.body.price);
-    //         newGame.playes = parseInt(req.body.players, 10);
-    //         newGame.age = parseInt(req.body.age, 10);
-
-    //         gameCollection.insertOne(newGame, function(err, response) {
-    //             if (err) {
-    //             res.status(500).json({error: err});
-    //             } else {
-    //             console.log(response);
-    //             res.status(201).json(response);
-    //             }
-
-    //         });
-    //     }
-    //     else {
-    //         return res.status(500).json({error : "Age must be between 6 and 99 or players must be between 1 to 11"});
-    //     }
-    // }
-    // else {
-    //     return res.status(404).json({error : "No body Submited"});
-    // }
+   
     
 }
 
 module.exports.getOne = (req, res) => {
     console.log("Get One Controller called");
     const gameId= req.params.gameId;
+    const response = {
+        status : process.env.HTTP_STATUS_OK,
+        message : {} 
+    }
+    //check if gameId is valid
+    if(!mongoose.isValidObjectId(gameId)) {
+            console.log("invalid Id");
+            response.status = process.env.HTTP_STATUS_NOTFOUND;
+            response.message = {message : "Invalid gameId"}
+            return res.status(response.status).json(response.message)
+    }
+
     Game.findById(gameId).exec(function(err, games) {
         if(err) {
             console.log("Error reading game");
-            return res.status(500).json({error : err})
+            response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;
+            response.message = {error : err};
 
-        }
-        if(game) {
-            console.log("Found Game");
-            return res.status(200).json(games);
-        }
+        } 
         else {
-            console.log("game is null");
-            return res.status(404).json({message : "Game with given Id not found"});
+            if(games) {
+                console.log("Found Game");
+                response.status = process.env.HTTP_STATUS_OK;
+                response.message = games;
+            }
+            else {
+                console.log("game is null");
+                response.status = process.env.HTTP_STATUS_NOTFOUND;
+                response.message = {message : "Game with given Id not found"};
+            }
         }
+
+        return res.status(response.status).json(response.message);
         
         });
 }
 
 module.exports.deleteOne = (req, res) => {
-    console.log("Get One Controller called");
+    console.log("Delete One Controller called");
     const gameId= req.params.gameId;
-    Game.deleteOne(gameId).exec(function(err, response) {
-        if(err) {
-            return res.status(500).json({error : err})
+    const response = {
+        status : process.env.HTTP_STATUS_OK,
+        message : {} 
+    }
+    //check if gameId is valid
+    if(!mongoose.isValidObjectId(gameId)) {
+            console.log("invalid Id");
+            response.status = process.env.HTTP_STATUS_NOTFOUND;
+            response.message = {message : "Invalid gameId"}
+            return res.status(response.status).json(response.message)
+    }
 
+    Game.findByIdAndDelete(gameId).exec(function(err, games) {
+        if(err) {
+            console.log("Error reading game");
+            response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;
+            response.message = {error : err};
+
+        } 
+        else {
+                console.log("Found Game to delete");
+                response.status = process.env.HTTP_STATUS_OK;
+                response.message = {"message" : "game with this id deleted"};
         }
-        console.log("Deleted game", gameId);
-        return res.status(200).json(response);
+
+        return res.status(response.status).json(response.message);
+        
         });
 }
