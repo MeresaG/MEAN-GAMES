@@ -13,6 +13,10 @@ module.exports.getAll = (req, res) => {
         count = parseInt(req.query.count, 10);
         count = count > 10 ? 10 : count;
     }
+    if(isNaN(offset) || isNaN(count)) {
+        console.log("Offset or Count is not a number");
+        return res.status(400).json({message : "Offset and Count must be  digits"});
+    }
     Game.find().skip(offset).limit(count).exec(function(err, games) {
         if(err) {
             return res.status(500).json({error : err})
