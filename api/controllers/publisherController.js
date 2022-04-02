@@ -26,7 +26,7 @@ const getOne = (req, res) => {
         } 
         else {
             if(games) {
-                console.log("Found Game");
+                console.log("Found Game publisher");
                 response.status = process.env.HTTP_STATUS_OK;
                 response.message = games.publisher;
             }
