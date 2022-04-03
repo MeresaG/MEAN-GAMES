@@ -1,6 +1,43 @@
 const mongoose = require("mongoose");
 const Game = mongoose.model(process.env.GAME_MODEL)
 
+
+const _updateOne = function(req, res, gameUpdateCallback) {
+    const gameId= req.params.gameId;
+    const response = {
+        status : process.env.HTTP_STATUS_OK,
+        message : {} 
+    }
+    //check if gameId is valid
+    if(!mongoose.isValidObjectId(gameId)) {
+        console.log("invalid Id");
+        response.status = process.env.HTTP_STATUS_NOTFOUND;
+        response.message = {message : "Invalid gameId"}
+        return res.status(response.status).json(response.message)
+    }
+
+    Game.findById(gameId).exec(function(err, game) {
+        if(err) {
+            console.log("Error finding game");
+            response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;
+            response.message = err;
+
+        } 
+        else if(!game) {
+            console.log("game is null");
+            response.status = process.env.HTTP_STATUS_NOTFOUND;
+            response.message = {message : "Game with given Id not found"};
+            }
+        if(game) {
+            gameUpdateCallback(req, res, game, response)
+        }
+        else {
+            return res.status(response.status).json(response.message);
+        }
+    });
+
+}
+
 module.exports.getAll = (req, res) => {
     console.log("Get All Controller called");
     const response = {
@@ -159,5 +196,35 @@ module.exports.deleteOne = (req, res) => {
 }
 
 module.exports.updateOne = function(req, res) {
-    return
+    console.log("Update One Game Controller");
+    gameUpdate = function(req, res, game, response) {
+        game.title = req.body.title;
+        game.year = req.body.year;
+        game.rate = req.body.rate;
+        game.price = req.body.price;
+        game.maxPlayers = req.body.maxPlayers;
+        game.minPlayers = req.body.minPlayers;
+        game.minAge = req.body.minAge;
+        game.designers =req.body.designers;
+        if(req.body.name) {
+            console.log("Name Passed");
+            game.publisher.name = req.body.name;
+        } else {
+            console.log("No Name passed");
+            game.publisher = { name: "NoName" };
+        }
+        game.reviews = [];
+        game.save(function(err, updatedGame) {
+            if(err) {
+                response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;
+                response.message = err;
+            }
+            else {
+                response.status = process.env.HTTP_STATUS_OK;
+                response.message = updatedGame;
+            }
+            return res.status(response.status).json(response.message)
+        })
+    }
+    _updateOne(req, res, gameUpdate);
 }
