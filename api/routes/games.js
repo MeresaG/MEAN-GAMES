@@ -9,7 +9,7 @@ router.route('/games')
         .get(gameController.getAll)
         .post(gameController.addOne)
         .put(gameController.updateOne)//patch
-        .delete(gamesController.deleteOne);
+        .delete(gameController.deleteOne);
 
 
 router.route('/games/:gameId')
@@ -19,6 +19,8 @@ router.route('/games/:gameId')
 router.route('/games/:gameId/publisher')
         .get(publisherController.getOne)
         .post(publisherController.addOne)
+        .put(publisherController.updateOne)//patch
+        .delete(publisherController.deleteOne);
 
 router.route('/games/:gameId/reviews')
         .get(reviewController.getAll)

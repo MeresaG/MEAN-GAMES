@@ -20,6 +20,22 @@ const _addPublisher= function (req, res, game, response) {
 
 }
 
+const _deletePublisher = function(req, res, game, response) {
+    game.publisher = {name : "NoName"}
+    game.save(function(err, deletedGame) {
+       
+        if (err) {
+            response.status= process.env.HTTP_STATUS_INTERNAL_ERROR;
+            response.message= err;
+        }
+         else {
+            response.status= process.env.HTTP_STATUS_CREATED;
+            response.message= deletedGame.publisher;
+        }
+        return res.status(response.status).json(response.message);
+        });
+}
+
 
 
 const getOne = function(req, res) {
@@ -100,7 +116,51 @@ const addOne = function(req, res) {
 
 }
 
+const updateOne = function(req, res) {
+    return 
+}
+
+const deleteOne = function(req, res) {
+
+    console.log("Delete one publisher controller");
+    const gameId= req.params.gameId;
+    const response = {
+        status : process.env.HTTP_STATUS_OK,
+        message : {} 
+    }
+    //check if gameId is valid
+    if(!mongoose.isValidObjectId(gameId)) {
+            console.log("invalid Id");
+            response.status = process.env.HTTP_STATUS_NOTFOUND;
+            response.message = {message : "Invalid gameId"}
+            return res.status(response.status).json(response.message)
+    }
+
+    Game.findById(gameId).select('publisher').exec(function(err, game) {
+        if(err) {
+            console.log("Error reading game");
+            response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;
+            response.message = {error : err};
+
+        } 
+        else if(!game) {
+                console.log("game is null");
+                response.status = process.env.HTTP_STATUS_NOTFOUND;
+                response.message = {message : "Game with given Id not found"};
+        }
+        if(game) {
+            _deletePublisher(req, res, game, response);
+        }
+        else {
+            return res.status(response.status).json(response.message);
+        }   
+        });
+
+}
+
 module.exports = {
     getOne: getOne,
-    addOne: addOne
+    addOne: addOne,
+    deleteOne: deleteOne,
+    updateOne: updateOne
 }

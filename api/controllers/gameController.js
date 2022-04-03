@@ -157,3 +157,7 @@ module.exports.deleteOne = (req, res) => {
         
         });
 }
+
+module.exports.updateOne = function(req, res) {
+    return
+}
