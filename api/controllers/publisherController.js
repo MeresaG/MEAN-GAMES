@@ -20,6 +20,25 @@ const _addPublisher= function (req, res, game, response) {
 
 }
 
+const _updatePublisher= function (req, res, game, response) {
+    
+    game.publisher.name= req.body.name;
+    game.publisher.country= req.body.country;
+    game.publisher.established= req.body.established;
+
+    game.save(function(err, updatedGame) {
+        if (err) {
+        response.status= process.env.HTTP_STATUS_INTERNAL_ERROR;
+        response.message= err;
+        } else {
+        response.status= process.env.HTTP_STATUS_CREATED;
+        response.message= updatedGame.publisher;
+        }
+        return res.status(response.status).json(response.message);
+        });
+
+}
+
 const _deletePublisher = function(req, res, game, response) {
     game.publisher = {name : "NoName"}
     game.save(function(err, deletedGame) {
@@ -107,7 +126,7 @@ const addOne = function(req, res) {
                 response.message = {message : "Game with given Id not found"};
         }
         if(game) {
-            _addPublisher(req, res, game, response);
+            return _addPublisher(req, res, game, response);
         }
         else {
             return res.status(response.status).json(response.message);
@@ -117,7 +136,39 @@ const addOne = function(req, res) {
 }
 
 const updateOne = function(req, res) {
-    return 
+    console.log("Add one publisher controller added");
+    const gameId= req.params.gameId;
+    const response = {
+        status : process.env.HTTP_STATUS_OK,
+        message : {} 
+    }
+    //check if gameId is valid
+    if(!mongoose.isValidObjectId(gameId)) {
+            console.log("invalid Id");
+            response.status = process.env.HTTP_STATUS_NOTFOUND;
+            response.message = {message : "Invalid gameId"}
+            return res.status(response.status).json(response.message)
+    }
+
+    Game.findById(gameId).select('publisher').exec(function(err, game) {
+        if(err) {
+            console.log("Error finding game");
+            response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;
+            response.message = {error : err};
+
+        } 
+        else if(!game) {
+                console.log("game is null");
+                response.status = process.env.HTTP_STATUS_NOTFOUND;
+                response.message = {message : "Game with given Id not found"};
+        }
+        if(game) {
+            return _updatePublisher(req, res, game, response);
+        }
+        else {
+            return res.status(response.status).json(response.message);
+        }   
+        });
 }
 
 const deleteOne = function(req, res) {

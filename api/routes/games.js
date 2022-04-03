@@ -14,7 +14,7 @@ router.route('/games')
 
 router.route('/games/:gameId')
         .get(gameController.getOne)
-        .put(gameController.updateOne)//patch
+        .put(gameController.updateOne)
         .delete(gameController.deleteOne)
 
 router.route('/games/:gameId/publisher')

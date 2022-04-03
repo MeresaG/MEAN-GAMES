@@ -108,7 +108,7 @@ module.exports.addOne = (req, res) => {
             response.message= err;
         }
         else {
-            response.status = process.env.HTTP_STATUS_OK;
+            response.status = process.env.HTTP_STATUS_CREATED;
             response.message = game;
         }
         res.status(response.status).json(response.message);
@@ -220,7 +220,7 @@ module.exports.updateOne = function(req, res) {
                 response.message = err;
             }
             else {
-                response.status = process.env.HTTP_STATUS_OK;
+                response.status = process.env.HTTP_STATUS_UPDATED;
                 response.message = updatedGame;
             }
             return res.status(response.status).json(response.message)
