@@ -15,6 +15,7 @@ router.route('/games/:gameId')
 
 router.route('/games/:gameId/publisher')
         .get(publisherController.getOne)
+        .post(publisherController.addOne)
 
 router.route('/games/:gameId/reviews')
         .get(reviewController.getAll)
