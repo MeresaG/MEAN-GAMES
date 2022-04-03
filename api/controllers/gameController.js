@@ -135,17 +135,22 @@ module.exports.deleteOne = (req, res) => {
             return res.status(response.status).json(response.message)
     }
 
-    Game.findByIdAndDelete(gameId).exec(function(err, games) {
+    Game.findByIdAndDelete(gameId).exec(function(err, deletedGame) {
         if(err) {
             console.log("Error reading game");
             response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;
             response.message = {error : err};
 
         } 
+        else if(!deletedGame) {
+            console.log(" Game to delete not found");
+            response.status = process.env.HTTP_STATUS_NOTFOUND;
+                response.message = {"message": "Game ID not found"};
+        }
         else {
                 console.log("Found Game to delete");
                 response.status = process.env.HTTP_STATUS_OK;
-                response.message = {"message" : "game with this id deleted"};
+                response.message = deletedGame;
         }
 
         return res.status(response.status).json(response.message);

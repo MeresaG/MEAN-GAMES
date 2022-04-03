@@ -7,11 +7,14 @@ const reviewController = require('../controllers/reviewController');
 
 router.route('/games')
         .get(gameController.getAll)
-        .post(gameController.addOne);
+        .post(gameController.addOne)
+        .put(gameController.updateOne)//patch
+        .delete(gamesController.deleteOne);
+
 
 router.route('/games/:gameId')
         .get(gameController.getOne)
-        .delete(gameController.deleteOne);
+        .delete(gameController.deleteOne)
 
 router.route('/games/:gameId/publisher')
         .get(publisherController.getOne)
