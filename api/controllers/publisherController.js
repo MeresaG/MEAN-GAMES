@@ -20,11 +20,35 @@ const _addPublisher= function (req, res, game, response) {
 
 }
 
-const _updatePublisher= function (req, res, game, response) {
+const _updateFullPublisher= function (req, res, game, response) {
     
     game.publisher.name= req.body.name;
     game.publisher.country= req.body.country;
     game.publisher.established= req.body.established;
+
+    game.save(function(err, updatedGame) {
+        if (err) {
+        response.status= process.env.HTTP_STATUS_INTERNAL_ERROR;
+        response.message= err;
+        } else {
+        response.status= process.env.HTTP_STATUS_CREATED;
+        response.message= updatedGame.publisher;
+        }
+        return res.status(response.status).json(response.message);
+        });
+
+}
+
+const _updatePartialPublisher= function (req, res, game, response) {
+    
+    game.publisher.name= req.body.name || game.publisher.name;
+    game.publisher.country= req.body.country || game.publisher.country;
+    game.publisher.established= req.body.established || game.publisher.established;
+
+    if (req.body.lng && req.body.lat) {
+        game.publisher.location.coordinates= [parseFloat(req.body.lng),
+        parseFloat(req.body.lat)];
+    }
 
     game.save(function(err, updatedGame) {
         if (err) {
@@ -135,7 +159,7 @@ const addOne = function(req, res) {
 
 }
 
-const updateOne = function(req, res) {
+const _updateOne = function(req, res, methodCallBack) {
     console.log("Add one publisher controller added");
     const gameId= req.params.gameId;
     const response = {
@@ -163,7 +187,7 @@ const updateOne = function(req, res) {
                 response.message = {message : "Game with given Id not found"};
         }
         if(game) {
-            return _updatePublisher(req, res, game, response);
+            return methodCallBack(req, res, game, response);
         }
         else {
             return res.status(response.status).json(response.message);
@@ -209,7 +233,15 @@ const deleteOne = function(req, res) {
 
 }
 
+const fullUpdate = function(req, res) {
+
+    _updateOne(req, res, _updateFullPublisher)
+
+}
+
 const partialUpdate = function(req, res) {
+
+    _updateOne(req, res, _updatePartialPublisher)
 
 }
 
@@ -217,6 +249,6 @@ module.exports = {
     getOne: getOne,
     addOne: addOne,
     deleteOne: deleteOne,
-    updateOne: updateOne,
+    fullUpdate: fullUpdate,
     partialUpdate: partialUpdate
 }

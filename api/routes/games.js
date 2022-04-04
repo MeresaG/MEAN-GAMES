@@ -21,7 +21,7 @@ router.route('/games/:gameId')
 router.route('/games/:gameId/publisher')
         .get(publisherController.getOne)
         .post(publisherController.addOne)
-        .put(publisherController.updateOne)
+        .put(publisherController.fullUpdate)
         .delete(publisherController.deleteOne)
         .patch(publisherController.partialUpdate)
 
