@@ -16,12 +16,14 @@ router.route('/games/:gameId')
         .get(gameController.getOne)
         .put(gameController.updateOne)
         .delete(gameController.deleteOne)
+        .patch(gameController.partialUpdate)
 
 router.route('/games/:gameId/publisher')
         .get(publisherController.getOne)
         .post(publisherController.addOne)
-        .put(publisherController.updateOne)//patch
-        .delete(publisherController.deleteOne);
+        .put(publisherController.updateOne)
+        .delete(publisherController.deleteOne)
+        .patch(publisherController.partialUpdate)
 
 router.route('/games/:gameId/reviews')
         .get(reviewController.getAll)
