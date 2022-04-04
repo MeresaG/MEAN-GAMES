@@ -228,3 +228,34 @@ module.exports.updateOne = function(req, res) {
     }
     _updateOne(req, res, gameUpdate);
 }
+
+module.exports.partialUpdate = function(req, res) {
+    console.log("Partial Update Game Controller");
+    partialGameUpdate = function(req, res, game, response) {
+        game.title = req.body.title || game.title;
+        game.year = req.body.year || game.year;
+        game.rate = req.body.rate || game.rate;
+        game.price = req.body.price || game.price;
+        game.maxPlayers = req.body.maxPlayers || game.maxPlayers ;
+        game.minPlayers = req.body.minPlayers || game.minPlayers ;
+        game.minAge = req.body.minAge || game.minAge;
+        game.designers =req.body.designers || game.designers; 
+        if(req.body.name) {
+            console.log("Name Passed");
+            game.publisher.name = req.body.name;
+        } 
+        
+        game.save(function(err, updatedGame) {
+            if(err) {
+                response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;
+                response.message = err;
+            }
+            else {
+                response.status = process.env.HTTP_STATUS_OK;
+                response.message = updatedGame;
+            }
+            return res.status(response.status).json(response.message)
+        })
+    }
+    _updateOne(req, res, partialGameUpdate);
+}

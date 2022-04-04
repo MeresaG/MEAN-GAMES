@@ -209,9 +209,14 @@ const deleteOne = function(req, res) {
 
 }
 
+const partialUpdate = function(req, res) {
+
+}
+
 module.exports = {
     getOne: getOne,
     addOne: addOne,
     deleteOne: deleteOne,
-    updateOne: updateOne
+    updateOne: updateOne,
+    partialUpdate: partialUpdate
 }
