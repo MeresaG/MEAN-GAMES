@@ -1,0 +1,8 @@
+<ul>
+    <li *ngFor="let game of games">
+        <a routerLink="/game/{{game._id}}">
+            {{game.title}}
+        </a>
+        <app-delete-game [gameId]=game._id></app-delete-game>
+    </li>
+</ul>

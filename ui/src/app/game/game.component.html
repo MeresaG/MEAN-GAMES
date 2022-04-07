@@ -1,0 +1,9 @@
+<H1>{{game.title}} - <stars-rating [rating]=game.rate></stars-rating> </H1>
+<br/>
+Year: {{game.year}}<br/>
+Price: {{game.price | currency}}<br/>
+Minimum Players: {{game.minPlayers}}<br/>
+Maximum Players: {{game.maxPlayers}}<br/>
+Minimum Age: {{game.minAge}}<br/>
+
+<app-delete-game [gameId]=game._id></app-delete-game>

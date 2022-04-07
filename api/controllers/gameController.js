@@ -1,3 +1,4 @@
+const { query } = require("express");
 const mongoose = require("mongoose");
 const Game = mongoose.model(process.env.GAME_MODEL)
 
@@ -38,14 +39,45 @@ const _updateOne = function(req, res, gameUpdateCallback) {
 
 }
 
+
+const _runGeoQuery = function(req, res, offset, count) {
+    const lng = parseFloat(req.query.lng);
+    const lat = parseFloat(req.query.lat);
+    const distance = parseInt(req.query.distance) || 1000;
+    const point  = {
+        type:"Point",
+        coordinates:[lng, lat]
+    };
+    const query = {
+        "publisher.location.coordinates" : {
+            $near : {
+                $geometry:point, 
+                $minDistance:0, 
+                $maxDistance:distance
+            }
+        }
+    };
+    Game.find(query).skip(offset).limit(count).exec(function(err, game) {
+        if(err) {
+            console.log("Geo Error", err);
+            res.status(500).json(err);
+        }else {
+            console.log("Geo results", game);
+            res.status(200).json(game);
+        }
+    })
+}
+
 module.exports.getAll = (req, res) => {
     console.log("Get All Controller called");
+
+    
     const response = {
         status : process.env.HTTP_STATUS_OK,
         message : {} 
     }
     let offset = 0;
-    let count = 3;
+    let count = 10;
     if(req.query && req.query.offset) {
         offset = parseInt(req.query.offset, 10);
     }
@@ -64,6 +96,10 @@ module.exports.getAll = (req, res) => {
     }
      else {
         count = count > 10 ? 10 : count;
+        if(req.query && req.query.lat && req.query.lng) {
+            _runGeoQuery(req, res, offset, count);
+            return ;
+        }
         Game.find().skip(offset).limit(count).exec(function(err, games) {
             if(err) {
                 response.status = process.env.HTTP_STATUS_INTERNAL_ERROR;

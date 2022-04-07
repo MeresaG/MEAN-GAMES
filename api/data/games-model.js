@@ -28,7 +28,11 @@ const PublisherSchema = mongoose.Schema({
         required: true
     },
     country : String,
-    established : Number
+    established : Number,
+    location : {
+        type:[Number], // this is stored as longitude (E/W), latitude(N/S)
+        index:"2dsphere"
+    }
 })
 
 const GameSchema = mongoose.Schema({
