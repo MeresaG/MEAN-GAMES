@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute} from '@angular/router';
-import { DeleteGameComponent } from '../delete-game/delete-game.component';
 import { GamesDataService } from '../games-data.service';
 import { Game } from '../games/games.component';
 

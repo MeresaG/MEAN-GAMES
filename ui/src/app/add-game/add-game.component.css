@@ -1,0 +1,12 @@
+input {
+    margin-left: 10px;
+}
+
+label {
+    width: 15%;
+    margin-left: 10px;
+}
+input[type='submit'] {
+    margin-top: 5px;
+    margin-left: 20%;
+}

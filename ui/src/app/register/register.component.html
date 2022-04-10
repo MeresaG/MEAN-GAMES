@@ -1,0 +1,21 @@
+<form [formGroup] ="registrationForm" (ngSubmit) ="register()">
+    <div>
+        <label>Name : </label>
+        <input type="text" formControlName="name" placeholder="Your name">
+    </div>
+    <div>
+        <label>Username : </label>
+        <input type="text" formControlName="username" placeholder="Your username">
+    </div>
+    <div>
+        <label>Password : </label>
+        <input type="password" formControlName="password" placeholder="passowrd">
+    </div>
+    <div>
+        <label>repeat Password? </label>
+        <input type="password" formControlName="repeatPassword" placeholder="repeate passowrd">
+    </div>
+    <div>
+        <input type="submit" value="Register">
+    </div>
+</form>

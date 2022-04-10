@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { Game } from './games/games.component';
 
@@ -23,6 +24,13 @@ export class GamesDataService {
 
   public deleteGame(id:string): Observable<Game> {
     let url = this.baseUrl + "/games/" + id;
+    
     return this.http.delete<Game>(url);
+  }
+
+  public addGame(body:FormGroup): Observable<Game> {
+    let url = this.baseUrl + "/games";
+
+    return this.http.post<Game>(url, body);
   }
 }

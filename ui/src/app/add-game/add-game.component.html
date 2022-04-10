@@ -1,0 +1,39 @@
+<form [formGroup] ="addForm" (ngSubmit) ="add()">
+    <div>
+        <label>Title : </label>
+        <input type="text" formControlName="title" placeholder="Enter Title">
+    </div>
+    <div>
+        <label>Year : </label>
+        <input type="number" formControlName="year" placeholder="Enter Year">
+    </div>
+    <div>
+        <label>price : </label>
+        <input type="number" formControlName="price" placeholder="Enter Price">
+    </div>
+    <div>
+        <label>rate: </label>
+        <input type="number" formControlName="rate" placeholder="Enter rate">
+    </div>
+    <div>
+        <label>Min Players: </label>
+        <input type="number" formControlName="minPlayers" placeholder="Enter Min Players">
+    </div>
+    <div>
+        <label>Max Players: </label>
+        <input type="number" formControlName="maxPlayers" placeholder="Enter Max Players">
+    </div>
+    <div>
+        <label>Min Age: </label>
+        <input type="number" formControlName="minAge" placeholder="Enter Min Age">
+    </div>
+    <div>
+        <label>Designers: </label>
+        <input type="text" formControlName="designers" placeholder="Enter Designers">
+    </div>
+    <div>
+        <input type="submit" value="Add">
+        <span style="color: green;"> {{status}}</span>
+    </div>
+    
+</form>
